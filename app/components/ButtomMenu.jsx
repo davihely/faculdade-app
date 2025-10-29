@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     padding: 16,
+    textColor: "black",
     backgroundColor: 'rgba(255, 255, 255, 0.9)', // Fundo para destacar
     alignItems: 'center',
     borderTopWidth: 1,

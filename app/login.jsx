@@ -65,7 +65,7 @@ export default function LoginView() {
       {/* Remove o header (TopDropDownMenu) desta tela específica */}
       <Stack.Screen options={{ headerShown: false }} />
 
-      <Title style={styles.title}>Meu App</Title>
+      <Title style={styles.title} >Login</Title>
       
       <Image
         style={styles.logo}
@@ -126,25 +126,31 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     justifyContent: 'center',
+    textColor: 'black'
   },
   title: {
     textAlign: 'center',
     marginBottom: 24,
     fontSize: 28,
+    textColor: 'black'
   },
   logo: {
     width: 120,
     height: 120,
     marginBottom: 32,
     alignSelf: 'center',
+    textColor: 'black'
   },
   input: {
     marginBottom: 12,
+    textColor: 'black'
   },
   button: {
     marginTop: 12,
+    textColor: 'black'
   },
   buttonText: {
     marginTop: 16,
+    textColor: 'black'
   }
 });
