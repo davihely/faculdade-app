@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "app-faculdade",
-    "slug": "app-faculdade",
+    "name": "projeto-faculdade",
+    "slug": "projeto-faculdade",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "appfaculdade",
+    "scheme": "projetofaculdade",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -38,7 +38,8 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,

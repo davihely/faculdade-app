@@ -1,34 +1,43 @@
-// Salvar em: app/entities/UsuarioEntity.js
-
-// Funções utilitárias de ID (conforme padrão)
+// app/entities/UsuarioEntity.js
 function normalizeId(raw) {
-  if (!raw) return null;
-  return String(raw);
+    return raw != null ? String(raw) : null;
 }
 function newId() {
-  return `u_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    return `u${Date.now()}`;
 }
 
+/** @typedef {{id?:string,nome:string,genero:string,dataNascimento:string,cpf:string,ddi:string,celular:string,email:string,senha:string}} UsuarioDTO */
+
 export default class UsuarioEntity {
-  constructor({ id = null, nome = '', email = '', senha = '' } = {}) {
-    this.id = normalizeId(id) ?? newId();
-    this.nome = nome;
-    this.email = email;
-    this.senha = senha; // Em um app real, nunca armazenar senha em plain text
-  }
+    /** @param {UsuarioDTO} param0 */
+    constructor({
+        id = null,
+        nome = "",
+        genero = "",
+        dataNascimento = "",
+        cpf = "",
+        ddi = "55",
+        celular = "",
+        email = "",
+        senha = "",
+    } = {}) {
+        this.id = normalizeId(id) ?? newId();
+        this.nome = nome;
+        this.genero = genero;
+        this.dataNascimento = dataNascimento; // manter string (YYYY-MM-DD ou dd/mm/yyyy conforme tela)
+        this.cpf = cpf;
+        this.ddi = ddi;
+        this.celular = celular;
+        this.email = String(email || "").toLowerCase().trim();
+        this.senha = senha;
+    }
 
-  /**
-   * @param {object} d - DTO (Data Transfer Object)
-   * @returns {UsuarioEntity | null}
-   */
-  static fromDto(d) {
-    return d ? new UsuarioEntity(d) : null;
-  }
+    /** @param {UsuarioDTO|null|undefined} d */
+    static fromDto(d) {
+        return d ? new UsuarioEntity(d) : null;
+    }
 
-  /**
-   * @returns {string}
-   */
-  get key() {
-    return String(this.id);
-  }
+    get key() {
+        return String(this.id);
+    }
 }
