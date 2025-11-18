@@ -12,7 +12,6 @@ const C = {
     outline: "#E6CFE0",
 };
 
-// Credenciais do Admin
 const ADMIN_EMAIL = "admin@glowmap.app";
 
 export default function loginView() {
@@ -22,13 +21,11 @@ export default function loginView() {
 
     async function handleEntrar() {
         const mail = String(email || "").trim().toLowerCase();
-
         if (!mail || !mail.includes("@")) {
             Toast.show({ type: "error", text1: "Digite um e-mail válido" });
             return;
         }
 
-        // Admin pula verificação
         if (mail === ADMIN_EMAIL.toLowerCase()) {
             router.push({ pathname: "/view/loginSenhaView", params: { email: mail } });
             return;
@@ -36,15 +33,12 @@ export default function loginView() {
 
         try {
             const user = await usuarioService.buscarPorEmail(mail);
-
             if (user && user.email) {
                 router.push({ pathname: "/view/loginSenhaView", params: { email: mail } });
             } else {
                 setShowNotFoundModal(true);
             }
-
         } catch (e) {
-            console.log("LOGIN ERROR:", e);
             Toast.show({ type: "error", text1: "Erro ao verificar e-mail" });
         }
     }
@@ -94,7 +88,6 @@ export default function loginView() {
                 <Text style={styles.cancelText}>Cancelar</Text>
             </Pressable>
 
-            {/* MODAL DE CONTA NÃO ENCONTRADA */}
             <Modal visible={showNotFoundModal} transparent animationType="fade">
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalBox}>
@@ -117,7 +110,7 @@ export default function loginView() {
                             contentStyle={{ height: 48 }}
                             labelStyle={styles.modalButtonText}
                         >
-                            Criar minha conta GlowMap
+                            Criar minha conta
                         </Button>
                     </View>
                 </View>
@@ -127,13 +120,7 @@ export default function loginView() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: C.bg,
-        alignItems: "center",
-        justifyContent: "center",
-        paddingHorizontal: 24,
-    },
+    container: { flex: 1, backgroundColor: C.bg, alignItems: "center", justifyContent: "center", paddingHorizontal: 24 },
     logo: { width: 180, height: 110, marginBottom: 40, marginTop: -40 },
     label: { fontWeight: "600", color: C.text, marginBottom: 4 },
     input: { width: "100%", backgroundColor: "#FFF", marginBottom: 20, borderRadius: 0 },
@@ -144,9 +131,9 @@ const styles = StyleSheet.create({
     googleLabel: { fontWeight: "600", color: C.primary },
     cancelText: { color: C.primary, textDecorationLine: "underline" },
     modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.4)", justifyContent: "flex-end" },
-    modalBox: { backgroundColor: "#FFF", padding: 24, alignItems: "center", borderTopLeftRadius: 0, borderTopRightRadius: 0 },
-    modalTitle: { fontSize: 16, fontWeight: "700", color: C.text, textAlign: "center", marginBottom: 16 },
+    modalBox: { backgroundColor: "#FFF", padding: 24, alignItems: "center" },
+    modalTitle: { fontSize: 16, fontWeight: "700", color: C.text, marginBottom: 16 },
     modalLink: { color: C.primary, textDecorationLine: "underline", marginBottom: 20 },
-    modalButton: { width: "100%", backgroundColor: C.primary, borderRadius: 0 },
+    modalButton: { width: "100%", backgroundColor: C.primary },
     modalButtonText: { color: "#FFF", fontWeight: "600" },
 });

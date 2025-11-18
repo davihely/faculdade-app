@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
@@ -19,29 +20,25 @@ export default function loginSenhaView() {
     const [mostrarSenha, setMostrarSenha] = useState(false);
 
     async function handleLogin() {
-        const mail = String(email || '').trim().toLowerCase();
-        if (!mail) {
-            Toast.show({ type: 'error', text1: 'E-mail inválido' });
-            router.replace('/view/loginView');
-            return;
-        }
-        if (!senha) {
-            Toast.show({ type: 'error', text1: 'Digite sua senha' });
-            return;
-        }
         try {
-            const { ok, usuario } = await usuarioService.autenticar(mail, senha);
-            if (ok) {
+            const { ok, usuario } = await usuarioService.autenticar(email.toLowerCase(), senha);
+
+            if (ok && usuario) {
+                await AsyncStorage.setItem("@usuarioLogado", JSON.stringify(usuario));
+
                 Toast.show({ type: 'success', text1: 'Bem-vinda(o)!' });
 
-                if (usuario?.tipoUsuario === "admin") {
+                if (usuario.tipoUsuario === "Admin") {
                     router.replace('/view/admin/dashboardAdminView');
-                } else if (usuario?.tipoUsuario === "estabelecimento") {
-                    router.replace('/view/dashboardEstabelecimentoView');
-                } else {
+                }
+                else if (usuario.tipoUsuario === "Estabelecimento") {
+                    router.replace('/view/estabelecimentoDashboardView');
+                }
+                else {
                     router.replace('/view/homeView');
                 }
             }
+
         } catch (e) {
             Toast.show({ type: 'error', text1: e.message });
         }
@@ -60,7 +57,7 @@ export default function loginSenhaView() {
             <Text style={styles.subtitle}>Digite sua senha para continuar</Text>
 
             <Text style={styles.label}>E-mail</Text>
-            <TextInput mode="outlined" value={String(email || '')} disabled style={styles.input} />
+            <TextInput mode="outlined" value={String(email)} disabled style={styles.input} />
 
             <Text style={styles.label}>Senha</Text>
             <TextInput
@@ -84,8 +81,6 @@ export default function loginSenhaView() {
             >
                 Entrar
             </Button>
-
-            <Text style={styles.forgotText}>Esqueci minha senha</Text>
         </View>
     );
 }
@@ -100,5 +95,4 @@ const styles = StyleSheet.create({
     input: { backgroundColor: '#FFF', width: '100%', borderRadius: 0, marginBottom: 16 },
     loginButton: { width: '100%', backgroundColor: C.primary, borderRadius: 0, marginTop: 20, marginBottom: 16 },
     loginButtonText: { color: '#FFF', fontWeight: '600' },
-    forgotText: { color: C.primary, textDecorationLine: 'underline', textAlign: 'center' },
 });

@@ -96,13 +96,34 @@ export default function usuarioFormView() {
     }
 
     function adicionarFuncionario() {
-        setFuncionarios([...funcionarios, { nome: '', area: '' }]);
+        setFuncionarios([...funcionarios, { nome: '', area: '', imagem: null }]);
     }
 
     function atualizarFuncionario(index, campo, valor) {
         const clone = [...funcionarios];
         clone[index][campo] = valor;
         setFuncionarios(clone);
+    }
+
+    // 🔥 NOVO: escolher foto do funcionário
+    async function escolherFotoFuncionario(index) {
+        try {
+            const res = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                quality: 1,
+            });
+
+            if (!res.canceled) {
+                const uri = res.assets[0].uri;
+                const clone = [...funcionarios];
+                if (!clone[index]) clone[index] = { nome: '', area: '' };
+                clone[index] = { ...clone[index], imagem: uri };
+                setFuncionarios(clone);
+            }
+        } catch (e) {
+            console.log("Erro ao escolher foto do funcionário", e);
+        }
     }
 
     function filtrarSugestoesEndereco(texto) {
@@ -513,6 +534,29 @@ export default function usuarioFormView() {
                                         borderColor: C.outline,
                                     }}
                                 >
+                                    {/* FOTO DO FUNCIONÁRIO */}
+                                    <View style={styles.funcionarioFotoRow}>
+                                        {f.imagem ? (
+                                            <Image
+                                                source={{ uri: f.imagem }}
+                                                style={styles.funcionarioFoto}
+                                            />
+                                        ) : (
+                                            <View style={styles.funcionarioFotoPlaceholder}>
+                                                <Text style={styles.funcionarioFotoPlaceholderText}>Foto</Text>
+                                            </View>
+                                        )}
+
+                                        <Button
+                                            mode="outlined"
+                                            onPress={() => escolherFotoFuncionario(index)}
+                                            textColor={C.primary}
+                                            style={styles.funcionarioFotoButton}
+                                        >
+                                            Selecionar foto
+                                        </Button>
+                                    </View>
+
                                     <TextInput
                                         mode="outlined"
                                         placeholder="Nome"
@@ -629,5 +673,36 @@ const styles = StyleSheet.create({
         backgroundColor: C.primary,
         borderRadius: 0,
         marginTop: 10,
+    },
+    // 🔥 estilos novos para foto do funcionário
+    funcionarioFotoRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 12,
+    },
+    funcionarioFoto: {
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        marginRight: 12,
+        backgroundColor: '#EEE',
+    },
+    funcionarioFotoPlaceholder: {
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        marginRight: 12,
+        backgroundColor: '#EEE',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    funcionarioFotoPlaceholderText: {
+        fontSize: 12,
+        color: C.text,
+    },
+    funcionarioFotoButton: {
+        flex: 1,
+        borderColor: C.outline,
+        backgroundColor: '#FFF',
     },
 });

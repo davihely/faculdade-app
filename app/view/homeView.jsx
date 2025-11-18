@@ -4,7 +4,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, Dimensions, Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import {
+    ActivityIndicator,
+    Dimensions,
+    Image,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    View,
+} from "react-native";
 import { Text } from "react-native-paper";
 import Carousel from "react-native-reanimated-carousel";
 import bannerService from "../services/bannerService";
@@ -29,19 +37,21 @@ export default function HomeView() {
     async function carregarDados() {
         try {
             setLoading(true);
-            
+
             const catList = await categoriaService.listar();
             const bannerList = await bannerService.listar();
 
             const bannersFiltrados = bannerList
-                .filter((b) => b.ativo === true)   // apenas ativos
-                .sort((a, b) => a.ordem - b.ordem); // ordem crescente
+                ?.filter((b) => b?.ativo)
+                ?.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
 
-            setCategorias(catList);
-            setBanners(bannersFiltrados);
+            setCategorias(catList || []);
+            setBanners(bannersFiltrados || []);
+
+            console.log("BANNERS LOADED: ", bannersFiltrados);
 
         } catch (error) {
-            console.error("Erro ao carregar dados:", error);
+            console.error("Erro ao carregar:", error);
         } finally {
             setLoading(false);
         }
@@ -51,7 +61,6 @@ export default function HomeView() {
         carregarDados();
     }, []);
 
-    // Atualiza quando a tela volta ao foco
     useFocusEffect(
         useCallback(() => {
             carregarDados();
@@ -59,7 +68,7 @@ export default function HomeView() {
     );
 
     return (
-        <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 30 }}>
+        <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>
 
             {/* LOCALIZAÇÃO */}
             <Text style={styles.sectionTitleSmall}>Minha localização</Text>
@@ -68,28 +77,31 @@ export default function HomeView() {
                 <Ionicons name="chevron-down-outline" size={18} color={C.text} />
             </Pressable>
 
-            {/* CARROSSEL DE BANNERS */}
+            {/* BANNERS */}
             <Text style={styles.sectionTitle}>Destaques</Text>
 
             {loading ? (
-                <ActivityIndicator size="large" color={C.primary} style={{ marginTop: 20 }} />
-            ) : banners.length > 0 ? (
+                <ActivityIndicator size="large" color={C.primary} />
+            ) : banners?.length > 0 ? (
                 <Carousel
                     width={width - 32}
                     height={160}
                     data={banners}
-                    style={{ borderRadius: 10, alignSelf: "center" }}
-                    scrollAnimationDuration={600}
+                    loop
+                    scrollAnimationDuration={700}
+                    style={{ alignSelf: "center" }}
                     renderItem={({ item }) => (
-                        <Image
-                            source={{ uri: item.imagem }}
-                            style={styles.banner}
-                            resizeMode="cover"
-                        />
+                        <View style={styles.bannerBox}>
+                            <Image
+                                source={{ uri: item?.imagem || "" }}
+                                style={styles.banner}
+                                onError={() => console.log("Erro imagem banner:", item)}
+                            />
+                        </View>
                     )}
                 />
             ) : (
-                <Text style={{ color: C.text, marginTop: 8 }}>Nenhum banner disponível</Text>
+                <Text style={{ marginTop: 10, color: C.text }}>Nenhum banner cadastrado</Text>
             )}
 
             {/* TEXTO */}
@@ -98,33 +110,29 @@ export default function HomeView() {
                 Fique por dentro das novidades nos espaços parceiros
             </Text>
 
-            {/* LISTAGEM CATEGORIAS */}
+            {/* CATEGORIAS */}
             <Text style={styles.sectionTitle}>Categorias</Text>
 
-            {loading ? (
-                <ActivityIndicator size="large" color={C.primary} style={{ marginTop: 20 }} />
-            ) : (
-                <View style={styles.cardRowWrapper}>
-                    {categorias.map((cat) => (
-                        <Pressable
-                            key={cat.id}
-                            style={styles.card}
-                            onPress={() =>
-                                router.push({
-                                    pathname: "/view/categoriaDetalheView",
-                                    params: { id: cat.id, nome: cat.nome }
-                                })
-                            }
-                        >
-                            <Image
-                                source={{ uri: cat?.imagem || "https://via.placeholder.com/300?text=Sem+imagem" }}
-                                style={styles.cardImage}
-                            />
-                            <Text style={styles.cardText}>{cat.nome}</Text>
-                        </Pressable>
-                    ))}
-                </View>
-            )}
+            <View style={styles.cardContainer}>
+                {categorias.map((cat) => (
+                    <Pressable
+                        key={cat.id}
+                        style={styles.card}
+                        onPress={() =>
+                            router.push({
+                                pathname: "/view/categoriaDetalheView",
+                                params: { id: cat.id, nome: cat.nome },
+                            })
+                        }
+                    >
+                        <Image
+                            source={{ uri: cat?.imagem || "https://via.placeholder.com/200" }}
+                            style={styles.cardImage}
+                        />
+                        <Text style={styles.cardText}>{cat.nome}</Text>
+                    </Pressable>
+                ))}
+            </View>
 
         </ScrollView>
     );
@@ -132,6 +140,8 @@ export default function HomeView() {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: C.bg, paddingHorizontal: 16 },
+
+    /* localização */
     sectionTitleSmall: { marginTop: 16, color: C.text, fontWeight: "700" },
     locationInput: {
         marginTop: 8,
@@ -145,17 +155,47 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     locationText: { flex: 1, color: C.text },
+
+    /* banners */
     sectionTitle: { marginTop: 25, color: C.text, fontWeight: "800", fontSize: 18 },
-    blockTitle: { marginTop: 20, color: C.text, fontWeight: "800", fontSize: 18 },
-    blockSubtitle: { color: "#8A6F83", marginBottom: 12 },
-    banner: { width: "100%", height: 160, borderRadius: 10 },
-    cardRowWrapper: {
+    bannerBox: {
+        width: "100%",
+        height: 160,
+        backgroundColor: "#ddd",
+        overflow: "hidden",
+        borderRadius: 12,
+    },
+    banner: {
+        width: "100%",
+        height: "100%",
+    },
+
+    /* text blocks */
+    blockTitle: { marginTop: 22, color: C.text, fontWeight: "800", fontSize: 18 },
+    blockSubtitle: { color: "#8A6F83", marginBottom: 10 },
+
+    /* categorias */
+    cardContainer: {
         flexDirection: "row",
         flexWrap: "wrap",
-        justifyContent: "space-between",
-        marginTop: 14
+        gap: 12,
+        marginTop: 14,
     },
-    card: { width: "32%", marginBottom: 14 },
-    cardImage: { width: "100%", height: 110, borderRadius: 6, backgroundColor: "#ddd" },
-    cardText: { marginTop: 6, color: C.text, fontWeight: "700", fontSize: 12, textAlign: "center" },
+    card: {
+        width: (width - 48) / 3, // 3 cards por linha
+        alignItems: "center",
+    },
+    cardImage: {
+        width: "100%",
+        height: 95,
+        borderRadius: 10,
+        backgroundColor: "#ddd",
+    },
+    cardText: {
+        marginTop: 5,
+        color: C.text,
+        fontWeight: "700",
+        fontSize: 12,
+        textAlign: "center",
+    },
 });

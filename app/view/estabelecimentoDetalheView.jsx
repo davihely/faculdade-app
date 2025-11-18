@@ -22,7 +22,6 @@ const C = {
     gray: "#8A6F83",
 };
 
-// Função para pegar o dia de hoje
 function getDiaHoje() {
     const dias = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
     return dias[new Date().getDay()];
@@ -37,12 +36,12 @@ export default function EstabelecimentoDetalheView() {
         async function load() {
             const todos = await usuarioService.listar();
             const est = todos.find(
-                (u) => u.id === id && u.tipoUsuario === "Estabelecimento"
+                (u) => String(u.id) === String(id) && u.tipoUsuario === "Estabelecimento"
             );
             setEstabelecimento(est || null);
         }
         load();
-    }, []);
+    }, [id]);
 
     if (!estabelecimento) {
         return (
@@ -54,9 +53,15 @@ export default function EstabelecimentoDetalheView() {
 
     const diaHoje = getDiaHoje();
 
+    function irParaSelecionarProfissional() {
+        router.push({
+            pathname: "/view/selecionarProfissionalView",
+            params: { id: estabelecimento.id },
+        });
+    }
+
     return (
         <View style={{ flex: 1, backgroundColor: "#FFF" }}>
-
             {/* HEADER */}
             <View style={styles.header}>
                 <Pressable onPress={() => router.back()}>
@@ -81,9 +86,8 @@ export default function EstabelecimentoDetalheView() {
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 style={{ flex: 1 }}
-                contentContainerStyle={{ paddingBottom: 140 }} // espaço pro botão flutuante
+                contentContainerStyle={{ paddingBottom: 140 }}
             >
-
                 {/* BANNER */}
                 {estabelecimento?.imagens?.[0] && (
                     <Image
@@ -97,11 +101,17 @@ export default function EstabelecimentoDetalheView() {
                 <View style={styles.infoWrapper}>
                     <View style={styles.row}>
                         <Image
-                            source={{ uri: estabelecimento.imagens?.[0] || "https://via.placeholder.com/80" }}
+                            source={{
+                                uri:
+                                    estabelecimento.imagens?.[0] ||
+                                    "https://via.placeholder.com/80",
+                            }}
                             style={styles.logo}
                         />
                         <View style={{ flex: 1 }}>
-                            <Text style={styles.nome}>{estabelecimento.nomeEstabelecimento}</Text>
+                            <Text style={styles.nome}>
+                                {estabelecimento.nomeEstabelecimento}
+                            </Text>
                             <View style={styles.tag}>
                                 <Text style={styles.tagText}>Novo no app</Text>
                             </View>
@@ -144,7 +154,9 @@ export default function EstabelecimentoDetalheView() {
                                     size={22}
                                     color={C.text}
                                 />
-                                <Text style={styles.link}>{estabelecimento.redesSociais}</Text>
+                                <Text style={styles.link}>
+                                    {estabelecimento.redesSociais}
+                                </Text>
                             </View>
                         </Pressable>
                     </>
@@ -188,10 +200,14 @@ export default function EstabelecimentoDetalheView() {
                         <Text style={styles.sectionTitle}>Profissionais</Text>
                         {estabelecimento.funcionarios.map((f, i) => (
                             <View key={i} style={styles.profCard}>
-                                <Ionicons
-                                    name="person-circle-outline"
-                                    size={30}
-                                    color={C.text}
+                                <Image
+                                    source={{
+                                        uri:
+                                            f.imagem ||
+                                            estabelecimento.imagens?.[0] ||
+                                            "https://via.placeholder.com/60",
+                                    }}
+                                    style={styles.profAvatar}
                                 />
                                 <View>
                                     <Text style={styles.profNome}>{f.nome}</Text>
@@ -203,7 +219,7 @@ export default function EstabelecimentoDetalheView() {
                 )}
             </ScrollView>
 
-            {/* BOTÃO AGENDAR (FLUTUANTE NO RODAPÉ, ACIMA DO MENU) */}
+            {/* BOTÃO AGENDAR */}
             <View style={styles.footer}>
                 <Button
                     mode="contained"
@@ -213,7 +229,7 @@ export default function EstabelecimentoDetalheView() {
                         fontWeight: "700",
                         color: "#FFF",
                     }}
-                    onPress={() => { }}
+                    onPress={irParaSelecionarProfissional}
                 >
                     Agendar
                 </Button>
@@ -221,8 +237,6 @@ export default function EstabelecimentoDetalheView() {
         </View>
     );
 }
-
-// =========== Styles ============
 
 const styles = StyleSheet.create({
     centered: { flex: 1, justifyContent: "center", alignItems: "center" },
@@ -308,12 +322,18 @@ const styles = StyleSheet.create({
         alignItems: "center",
         gap: 10,
     },
+    profAvatar: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: "#EEE",
+    },
     profNome: { fontWeight: "700", color: C.text },
     profArea: { fontSize: 13, color: C.gray },
 
     footer: {
         position: "absolute",
-        bottom: 80,          // sobe pra não ficar embaixo do BottomMenu
+        bottom: 80,
         left: 16,
         right: 16,
         alignItems: "center",
