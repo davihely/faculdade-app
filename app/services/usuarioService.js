@@ -3,6 +3,10 @@ import UsuarioEntity from "../entities/UsuarioEntity";
 
 const STORAGE_KEY = "@usuarios";
 
+// Credenciais FIXAS do Admin
+const ADMIN_EMAIL = "admin@glowmap.app";
+const ADMIN_SENHA = "admin123";
+
 async function loadAll() {
     const raw = await AsyncStorage.getItem(STORAGE_KEY);
     const arr = raw ? JSON.parse(raw) : [];
@@ -50,6 +54,13 @@ export default class usuarioService {
     }
 
     static async autenticar(email, senha) {
+
+        // 🔹 1º: Verifica se é o admin fixo
+        if (String(email).toLowerCase() === ADMIN_EMAIL.toLowerCase() && senha === ADMIN_SENHA) {
+            return { ok: true, usuario: { tipoUsuario: "admin", email: ADMIN_EMAIL } };
+        }
+
+        // 🔹 2º: Autenticação normal
         const user = await this.buscarPorEmail(email);
         if (!user) throw new Error("Usuária(o) não encontrada(o)");
         if (user.senha !== senha) throw new Error("Senha incorreta");

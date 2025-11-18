@@ -30,10 +30,17 @@ export default function loginSenhaView() {
             return;
         }
         try {
-            const { ok } = await usuarioService.autenticar(mail, senha);
+            const { ok, usuario } = await usuarioService.autenticar(mail, senha);
             if (ok) {
-                Toast.show({ type: 'success', text1: 'Bem-vinda(o) à GlowMap!' });
-                router.replace('/view/homeView');
+                Toast.show({ type: 'success', text1: 'Bem-vinda(o)!' });
+
+                if (usuario?.tipoUsuario === "admin") {
+                    router.replace('/view/admin/dashboardAdminView');
+                } else if (usuario?.tipoUsuario === "estabelecimento") {
+                    router.replace('/view/dashboardEstabelecimentoView');
+                } else {
+                    router.replace('/view/homeView');
+                }
             }
         } catch (e) {
             Toast.show({ type: 'error', text1: e.message });

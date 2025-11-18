@@ -12,6 +12,9 @@ const C = {
     outline: "#E6CFE0",
 };
 
+// Credenciais do Admin
+const ADMIN_EMAIL = "admin@glowmap.app";
+
 export default function loginView() {
     const router = useRouter();
     const [email, setEmail] = useState("");
@@ -19,18 +22,29 @@ export default function loginView() {
 
     async function handleEntrar() {
         const mail = String(email || "").trim().toLowerCase();
+
         if (!mail || !mail.includes("@")) {
             Toast.show({ type: "error", text1: "Digite um e-mail válido" });
             return;
         }
+
+        // Admin pula verificação
+        if (mail === ADMIN_EMAIL.toLowerCase()) {
+            router.push({ pathname: "/view/loginSenhaView", params: { email: mail } });
+            return;
+        }
+
         try {
             const user = await usuarioService.buscarPorEmail(mail);
-            if (user) {
+
+            if (user && user.email) {
                 router.push({ pathname: "/view/loginSenhaView", params: { email: mail } });
             } else {
                 setShowNotFoundModal(true);
             }
-        } catch {
+
+        } catch (e) {
+            console.log("LOGIN ERROR:", e);
             Toast.show({ type: "error", text1: "Erro ao verificar e-mail" });
         }
     }
@@ -80,6 +94,7 @@ export default function loginView() {
                 <Text style={styles.cancelText}>Cancelar</Text>
             </Pressable>
 
+            {/* MODAL DE CONTA NÃO ENCONTRADA */}
             <Modal visible={showNotFoundModal} transparent animationType="fade">
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalBox}>
