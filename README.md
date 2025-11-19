@@ -14,9 +14,11 @@ eficiente.
 
 -   Buscar estabelecimentos de beleza próximos à localização do
     usuário.
+-   Login e cadastro de usuario/estabelecimento
 -   Listar serviços oferecidos por cada estabelecimento.
 -   Filtrar por categorias (cabeleireiro, manicure, estética etc.).
 -   Exibir endereço, telefone e agenda.
+-   Agendamento de horario.
 -   Interface amigável e de fácil navegação.
 
 ------------------------------------------------------------------------
@@ -53,7 +55,7 @@ eficiente.
 ``` bash
 git clone https://github.com/davihely/faculdade-app.git
 cd faculdade-app
-npm install
+npm install expo
 npx expo start
 ```
 
@@ -88,4 +90,5 @@ npx expo start
 ## Contato
 
 -   **E-mail:** dev@glowmap.com\
+
 -   **GitHub:** https://github.com/davihely/faculdade-app
