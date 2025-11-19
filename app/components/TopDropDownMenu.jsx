@@ -1,12 +1,21 @@
-import { Image, StyleSheet, View } from 'react-native';
-import { IconButton } from 'react-native-paper';
+import { MaterialIcons } from "@expo/vector-icons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from "expo-router";
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 
 const C = {
-    primary: '#E36AC3', // cor da logo GlowMap
+    primary: '#E36AC3',
     text: '#FFFFFF',
 };
 
 export default function TopDropDownMenu() {
+    const router = useRouter();
+
+    async function handleLogout() {
+        await AsyncStorage.removeItem("@usuarioLogado");
+        router.replace("/"); 
+    }
+
     return (
         <View style={styles.header}>
             <Image
@@ -14,10 +23,11 @@ export default function TopDropDownMenu() {
                 style={styles.logo}
                 resizeMode="contain"
             />
-            <View style={styles.right}>
-                <IconButton icon="magnify" size={24} iconColor={C.text} onPress={() => { }} />
-                <IconButton icon="account-outline" size={26} iconColor={C.text} onPress={() => { }} />
-            </View>
+
+            {/* BOTÃO DE LOGOUT */}
+            <Pressable style={styles.logoutBtn} onPress={handleLogout}>
+                <MaterialIcons name="logout" size={26} color="#FFF" />
+            </Pressable>
         </View>
     );
 }
@@ -33,11 +43,11 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     logo: {
-        width: 130,   // 🔼 aumentado
-        height: 60,   // 🔼 aumentado
+        width: 130,
+        height: 60,
     },
-    right: {
-        flexDirection: 'row',
-        alignItems: 'center',
+    logoutBtn: {
+        padding: 6,
+        borderRadius: 50,
     },
 });

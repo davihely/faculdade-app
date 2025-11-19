@@ -32,4 +32,18 @@ export default class agendamentoService {
         await saveAll(list);
         return { ok: true, agendamento: this.toEntity(novo) };
     }
+
+    static async atualizar(id, campos) {
+        const list = await loadAll();
+        const idx = list.findIndex(x => x.id === id);
+        if (idx < 0) return { ok: false };
+
+        list[idx] = {
+            ...list[idx],
+            ...campos
+        };
+
+        await saveAll(list);
+        return { ok: true, agendamento: list[idx] };
+    }
 }

@@ -36,9 +36,9 @@ export default function categoriaFormView() {
     async function escolherImagem() {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
+            allowsEditing: false,      // 🔧 CORRIGIDO — impede o travamento
             base64: true,
-            quality: 0.7,
+            quality: 1,                // qualidade máxima
         });
 
         if (!result.canceled) {
@@ -89,7 +89,9 @@ export default function categoriaFormView() {
                     Selecionar imagem
                 </Button>
 
-                {imagem && <Image source={{ uri: imagem }} style={styles.preview} />}
+                {imagem && (
+                    <Image source={{ uri: imagem }} style={styles.preview} />
+                )}
 
                 <Button mode="contained" onPress={salvar} style={styles.btnSave}>
                     Salvar

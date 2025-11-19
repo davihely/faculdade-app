@@ -48,8 +48,6 @@ export default function HomeView() {
             setCategorias(catList || []);
             setBanners(bannersFiltrados || []);
 
-            console.log("BANNERS LOADED: ", bannersFiltrados);
-
         } catch (error) {
             console.error("Erro ao carregar:", error);
         } finally {
@@ -77,32 +75,30 @@ export default function HomeView() {
                 <Ionicons name="chevron-down-outline" size={18} color={C.text} />
             </Pressable>
 
-            {/* BANNERS */}
-            <Text style={styles.sectionTitle}>Destaques</Text>
-
+            {/* BANNERS — só aparece se existir */}
             {loading ? (
-                <ActivityIndicator size="large" color={C.primary} />
-            ) : banners?.length > 0 ? (
-                <Carousel
-                    width={width - 32}
-                    height={160}
-                    data={banners}
-                    loop
-                    scrollAnimationDuration={700}
-                    style={{ alignSelf: "center" }}
-                    renderItem={({ item }) => (
-                        <View style={styles.bannerBox}>
-                            <Image
-                                source={{ uri: item?.imagem || "" }}
-                                style={styles.banner}
-                                onError={() => console.log("Erro imagem banner:", item)}
-                            />
-                        </View>
-                    )}
-                />
-            ) : (
-                <Text style={{ marginTop: 10, color: C.text }}>Nenhum banner cadastrado</Text>
-            )}
+                <ActivityIndicator size="large" color={C.primary} style={{ marginTop: 20 }} />
+            ) : banners.length > 0 ? (
+                <>
+                    <Text style={styles.sectionTitle}>Destaques</Text>
+                    <Carousel
+                        width={width - 32}
+                        height={160}
+                        data={banners}
+                        loop
+                        scrollAnimationDuration={700}
+                        style={{ alignSelf: "center", marginTop: 10 }}
+                        renderItem={({ item }) => (
+                            <View style={styles.bannerBox}>
+                                <Image
+                                    source={{ uri: item?.imagem || "" }}
+                                    style={styles.banner}
+                                />
+                            </View>
+                        )}
+                    />
+                </>
+            ) : null}
 
             {/* TEXTO */}
             <Text style={styles.blockTitle}>O mundo de beleza e bem-estar na sua mão</Text>
@@ -110,14 +106,18 @@ export default function HomeView() {
                 Fique por dentro das novidades nos espaços parceiros
             </Text>
 
-            {/* CATEGORIAS */}
+            {/* CATEGORIAS — horizontal, deslizando, mais altas */}
             <Text style={styles.sectionTitle}>Categorias</Text>
 
-            <View style={styles.cardContainer}>
+            <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.categoryScroll}
+            >
                 {categorias.map((cat) => (
                     <Pressable
                         key={cat.id}
-                        style={styles.card}
+                        style={styles.categoryCard}
                         onPress={() =>
                             router.push({
                                 pathname: "/view/categoriaDetalheView",
@@ -127,12 +127,12 @@ export default function HomeView() {
                     >
                         <Image
                             source={{ uri: cat?.imagem || "https://via.placeholder.com/200" }}
-                            style={styles.cardImage}
+                            style={styles.categoryImage}
                         />
-                        <Text style={styles.cardText}>{cat.nome}</Text>
+                        <Text style={styles.categoryText}>{cat.nome}</Text>
                     </Pressable>
                 ))}
-            </View>
+            </ScrollView>
 
         </ScrollView>
     );
@@ -174,28 +174,27 @@ const styles = StyleSheet.create({
     blockTitle: { marginTop: 22, color: C.text, fontWeight: "800", fontSize: 18 },
     blockSubtitle: { color: "#8A6F83", marginBottom: 10 },
 
-    /* categorias */
-    cardContainer: {
-        flexDirection: "row",
-        flexWrap: "wrap",
-        gap: 12,
-        marginTop: 14,
+    /* categorias horizontais */
+    categoryScroll: {
+        paddingVertical: 10,
+        paddingRight: 8,
     },
-    card: {
-        width: (width - 48) / 3, // 3 cards por linha
+    categoryCard: {
+        width: 115,
+        marginRight: 14,
         alignItems: "center",
     },
-    cardImage: {
+    categoryImage: {
         width: "100%",
-        height: 95,
-        borderRadius: 10,
+        height: 150, // ← mais alto
+        borderRadius: 12,
         backgroundColor: "#ddd",
     },
-    cardText: {
-        marginTop: 5,
+    categoryText: {
+        marginTop: 6,
         color: C.text,
         fontWeight: "700",
-        fontSize: 12,
+        fontSize: 13,
         textAlign: "center",
     },
 });

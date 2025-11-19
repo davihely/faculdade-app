@@ -90,8 +90,9 @@ export default function estabelecimentoFormView() {
     async function escolherImagens() {
         const result = await ImagePicker.launchImageLibraryAsync({
             allowsMultipleSelection: true,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             quality: 1,
-            mediaTypes: ImagePicker.MediaTypeOptions.Images
+            allowsEditing: false, // <- FIX
         });
 
         if (!result.canceled) {
@@ -113,8 +114,8 @@ export default function estabelecimentoFormView() {
         try {
             const result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                allowsEditing: true,
                 quality: 1,
+                allowsEditing: false, // <- FIX
             });
 
             if (!result.canceled) {
@@ -335,7 +336,6 @@ const styles = StyleSheet.create({
     label: { color: C.text, fontWeight: "600", marginBottom: 6 },
     labelSmall: { color: C.text, marginBottom: 4 },
 
-    // fix visual dos inputs
     row: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -382,12 +382,12 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         justifyContent: "center",
         alignItems: "center",
-        elevation: 2
+        elevation: 2,
     },
     deleteImgTxt: {
         color: "#fff",
         fontWeight: "bold",
-        fontSize: 13
+        fontSize: 13,
     },
     funcCard: {
         backgroundColor: "#FFF",

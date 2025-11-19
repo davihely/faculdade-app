@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Appbar, Button, Text } from "react-native-paper";
+import categoriaService from "../services/categoriaService";
 
 const C = {
     primary: "#E36AC3",
@@ -15,6 +16,7 @@ const C = {
 export default function estabelecimentoDashboardView() {
     const router = useRouter();
     const [user, setUser] = useState(null);
+    const [categorias, setCategorias] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -22,6 +24,9 @@ export default function estabelecimentoDashboardView() {
             try {
                 const raw = await AsyncStorage.getItem("@usuarioLogado");
                 if (raw) setUser(JSON.parse(raw));
+
+                const cats = await categoriaService.listar();
+                setCategorias(cats);
             } catch (error) {
                 console.log("Erro ao carregar usuário", error);
             }
@@ -46,6 +51,8 @@ export default function estabelecimentoDashboardView() {
         );
     }
 
+    const categoriaNome = categorias.find(c => c.id == user.categoriaId)?.nome || "Não informada";
+
     return (
         <View style={styles.container}>
             <Appbar.Header style={{ backgroundColor: C.bg, elevation: 0 }}>
@@ -61,7 +68,7 @@ export default function estabelecimentoDashboardView() {
                 </Text>
 
                 <Text style={styles.block}>📍 Endereço: {user.endereco || "Não informado"}</Text>
-                <Text style={styles.block}>📁 Categoria ID: {user.categoriaId || "Não selecionada"}</Text>
+                <Text style={styles.block}>📁 Categoria: {categoriaNome}</Text>
 
                 <Button
                     mode="contained"
