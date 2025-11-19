@@ -1,50 +1,91 @@
-# Welcome to your Expo app 👋
+# GLOWMAP
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Visão Geral
 
-## Get started
+O **GlowMap** é um aplicativo que facilita a busca por salões e
+profissionais da área de beleza próximos ao usuário. O app lista
+serviços oferecidos, como cabeleireiro, barbearia, maquiagem,
+manicure e estética. Proporcionando uma navegação rápida, intuitiva e
+eficiente.
 
-1. Install dependencies
+------------------------------------------------------------------------
 
-   ```bash
-   npm install
-   ```
+## Funcionalidades
 
-2. Start the app
+-   Buscar estabelecimentos de beleza próximos à localização do
+    usuário.
+-   Listar serviços oferecidos por cada estabelecimento.
+-   Filtrar por categorias (cabeleireiro, manicure, estética etc.).
+-   Exibir endereço, telefone e agenda.
+-   Interface amigável e de fácil navegação.
 
-   ```bash
-   npx expo start
-   ```
+------------------------------------------------------------------------
 
-In the output, you'll find options to open the app in a
+## Telas do Aplicativo
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+-   **Login** -- Acesso via e-mail e senha, com opção de criar conta.
+-   **Tela Inicial** -- Exibe categorias e salões em destaque.
+-   **Busca** -- Localiza estabelecimentos próximos.
+-   **Agenda** -- Calendário com dias disponíveis para agendamento.
+-   **Cadastro de Estabelecimento** -- Permite que prestadores registrem
+    seus serviços e informações.
+-   **Perfil** -- Edição de dados pessoais do usuário.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+------------------------------------------------------------------------
 
-## Get a fresh project
+## Tecnologias Utilizadas
 
-When you're ready, run:
+-   **Frontend:** React Native
+-   **Backend:** Node.js
 
-```bash
-npm run reset-project
+------------------------------------------------------------------------
+
+## Como Rodar o Projeto
+
+### Pré-requisitos
+
+-   Node.js
+-   npm ou yarn
+-   Expo CLI
+
+### Passo a passo
+
+``` bash
+git clone https://github.com/davihely/faculdade-app.git
+cd faculdade-app
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Execução
 
-## Learn more
+-   **Mobile:** Simulador Android/iOS ou aplicativo Expo Go.
+-   **Web:** URL gerada pelo Expo (geralmente http://localhost:19006).
 
-To learn more about developing your project with Expo, look at the following resources:
+------------------------------------------------------------------------
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Roadmap (Futuras implementações)
 
-## Join the community
+-   Sistema de avaliações e comentários
+-   Notificações de promoções e novidades
+-   Sugestões personalizadas
+-   Integração com meios de pagamento
+-   Expansão para profissionais autônomos
 
-Join our community of developers creating universal apps.
+------------------------------------------------------------------------
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Equipe
+
+-   **Planejamento & Pesquisa:** Davi Hely, Gustavo Henrique, Ítalo
+    Henrique, Mayara Franco, Pedro Gabriel, Thalita Aquino
+-   **Desenvolvedor:** Davi Hely
+-   **QA / Testes:** Gustavo Henrique, Ítalo Henrique, Mayara Franco,
+    Pedro Gabriel, Thalita Aquino
+-   **Documentação:** Mayara Franco e Thalita Aquino
+
+------------------------------------------------------------------------
+
+## Contato
+
+-   **E-mail:** dev@glowmap.com\
+-   **GitHub:** https://github.com/davihely/faculdade-app
